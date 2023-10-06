@@ -14,15 +14,25 @@
 	</head>
   <body>
     <div class="layout">
-      <h1>Convert image to webp format</h1>
+      <h1>Convert image to webp/jpeg/png format</h1>
       <div>
         <input type="file" multiple accept="image/*">
+          <span>選擇格式：</span>
+          <select id="myselect">
+            <option value="1">webp格式</option>
+                <option value="2">jpeg格式</option>
+                <option value="3">png格式</option> 
+          </select>
       </div>
       <div id="previews">
         <p>預覽：</p>
       </div>
       <div class="dropTarget"></div>
-
+      <div class="fli">
+        <h3>備註：</h3>
+        <p>1、點擊預覽圖保存！</p>
+        <p>2、該工具目前僅支援轉換為webp、jpeg、png的格式。如果是gif動態圖片轉換後不保留動態效果。</p>
+      </div>
     </div>
   </body>
   <script src="index.js"></script>

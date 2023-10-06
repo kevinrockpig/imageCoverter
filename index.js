@@ -34,34 +34,32 @@ function processFile(file) {
     return new Promise(function (resolve, reject) {
       let canvas = document.createElement('canvas');
       let ctx = canvas.getContext("2d");
-
+      let imgType = canvasToImg(canvas);
       canvas.width = rawImage.width;
       canvas.height = rawImage.height;
       ctx.drawImage(rawImage, 0, 0);
-
       canvas.toBlob(function (blob) {
-        resolve(URL.createObjectURL(blob));
-      }, "image/webp");
+        resolve({ imageURL:URL.createObjectURL(blob), imgType:imgType});
+      }, imgType);
     });
   })
-  .then(function (imageURL) {
+  .then(function (imageData) {
     // Load image for display on the page
     return new Promise(function (resolve, reject) {
-      let scaledImg = new Image();
-
-      scaledImg.addEventListener("load", function () {
-        resolve({imageURL, scaledImg});
+      imageData.scaledImg = new Image();
+      imageData.scaledImg.addEventListener("load", function () {
+        resolve(imageData);
       });
 
-      scaledImg.setAttribute("src", imageURL);
+      imageData.scaledImg.setAttribute("src", imageData.imageURL);
     });
   })
   .then(function (data) {
     // Inject into the DOM
     let imageLink = document.createElement("a");
-
+    let imgType = data.imgType.split('/')[1];
     imageLink.setAttribute("href", data.imageURL);
-    imageLink.setAttribute('download', `${file.name}.webp`);
+    imageLink.setAttribute('download', `${file.name}.${imgType}`);
     imageLink.appendChild(data.scaledImg);
 
     imageBox.innerHTML = "";
@@ -105,3 +103,11 @@ function setDragDrop(area, callback) {
   area.addEventListener("drop", function (e) { drop(callback, e); }, false);
 }
 setDragDrop(document.documentElement, processFiles);
+
+//canvas轉換为image
+function canvasToImg(canvas) {
+    var array=["image/webp","image/jpeg","image/png"],
+        type=document.getElementById('myselect').value-1;
+    var src = array[type];
+    return src;
+}
